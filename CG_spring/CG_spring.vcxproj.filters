@@ -17,4 +17,20 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup>
+    <Image Include="glass.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="steel.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="wood.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
 </Project>
