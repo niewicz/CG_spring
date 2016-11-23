@@ -118,7 +118,11 @@
     <Image Include="wood.bmp" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Image.cpp" />
     <ClCompile Include="main.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Image.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
