@@ -1,8 +1,17 @@
 #include <GL/glut.h>
+#include <math.h>
 #include "Image.h"
 
 #define W_HEIGHT 800
 #define W_WIDTH 800
+
+#define N_SLICES (GLint)50
+#define N_STACKS (GLint)50
+#define N_SPIRALS 4
+#define M_PI 3.141592653589793238463
+
+#define RADIUS_SPRING (GLfloat)0.01
+#define RADIUS_BALL (GLfloat)0.1
 
 GLUquadric *quad;
 GLuint textureSteel, textureGlass;
@@ -51,8 +60,26 @@ void DrawSphere(GLfloat pos_x, GLfloat pos_y, GLfloat pos_z, GLuint texture, GLU
 void RenderScene()
 {
 	glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
+	GLfloat x;
+	GLfloat z;
+	GLfloat i;
 
-	DrawSphere(0.0f, 0.0f , 0.0f, textureGlass, quad, 1.0f, 50, 50);
+	for(i = 1.0f; i >= 0.95f; i -= RADIUS_SPRING)
+		DrawSphere(0.0f, i, 0.1f, textureSteel, quad, RADIUS_SPRING, N_SLICES, N_STACKS);
+
+	GLfloat y = 0.94f;
+	for (float ii = 0.0f; ii <= 2.0f * M_PI * N_SPIRALS; ii += 3*RADIUS_SPRING)
+	{
+		x = (GLfloat)sin(ii) / 10;
+		z = (GLfloat)cos(ii) / 10;
+		DrawSphere(x, y, z, textureSteel, quad, RADIUS_SPRING, N_SLICES, N_STACKS);
+		y -= RADIUS_SPRING/10;
+	}
+
+	for (i = 0.1f; i >= 0.0f; i -= RADIUS_SPRING)
+		DrawSphere(x, y - i, z, textureSteel, quad, RADIUS_SPRING, N_SLICES, N_STACKS);
+
+	DrawSphere(x, y - i - 2 * RADIUS_BALL , z, textureGlass, quad, RADIUS_BALL, N_SLICES, N_STACKS);
 	glFlush();
 
 	glutSwapBuffers();
