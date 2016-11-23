@@ -5,9 +5,12 @@
 #define W_HEIGHT 800
 #define W_WIDTH 800
 
-#define N_SLICES (GLint)50
-#define N_STACKS (GLint)50
+#define N_SLICES (GLint)20
+#define N_STACKS (GLint)20
 #define N_SPIRALS 4
+#define COEFF_K (GLfloat)1000
+#define MASS 10
+
 #define M_PI 3.141592653589793238463
 
 #define RADIUS_SPRING (GLfloat)0.01
@@ -16,9 +19,14 @@
 GLUquadric *quad;
 GLuint textureSteel, textureGlass;
 
+GLfloat time = 0;
+GLfloat period = (GLfloat)(2.0f * M_PI * sqrt(MASS / COEFF_K));
+
 void Timer(int value)
 {
-
+	time += 0.1 * period;
+	glutPostRedisplay();
+	glutTimerFunc(50, Timer, 0);
 }
 
 void InitializeScene()
@@ -60,26 +68,25 @@ void DrawSphere(GLfloat pos_x, GLfloat pos_y, GLfloat pos_z, GLuint texture, GLU
 void RenderScene()
 {
 	glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
-	GLfloat x;
-	GLfloat z;
-	GLfloat i;
+	GLfloat x, i, z;
 
 	for(i = 1.0f; i >= 0.95f; i -= RADIUS_SPRING)
 		DrawSphere(0.0f, i, 0.1f, textureSteel, quad, RADIUS_SPRING, N_SLICES, N_STACKS);
 
 	GLfloat y = 0.94f;
-	for (float ii = 0.0f; ii <= 2.0f * M_PI * N_SPIRALS; ii += 3*RADIUS_SPRING)
+	GLfloat displacement = period * sin(time) * 0.001f + 0.001;
+	for (float alfa = 0.0f; alfa <= 2.0f * M_PI * N_SPIRALS; alfa += 4 * RADIUS_SPRING)
 	{
-		x = (GLfloat)sin(ii) / 10;
-		z = (GLfloat)cos(ii) / 10;
+		x = (GLfloat)sin(alfa) / 10;
+		z = (GLfloat)cos(alfa) / 10;
 		DrawSphere(x, y, z, textureSteel, quad, RADIUS_SPRING, N_SLICES, N_STACKS);
-		y -= RADIUS_SPRING/10;
+		y -= displacement;
 	}
 
-	for (i = 0.1f; i >= 0.0f; i -= RADIUS_SPRING)
+	for (i = 0.05f; i >= 0.0f; i -= RADIUS_SPRING)
 		DrawSphere(x, y - i, z, textureSteel, quad, RADIUS_SPRING, N_SLICES, N_STACKS);
 
-	DrawSphere(x, y - i - 2 * RADIUS_BALL , z, textureGlass, quad, RADIUS_BALL, N_SLICES, N_STACKS);
+	DrawSphere(x, y - 1.5f * RADIUS_BALL , z, textureGlass, quad, RADIUS_BALL, N_SLICES, N_STACKS);
 	glFlush();
 
 	glutSwapBuffers();
