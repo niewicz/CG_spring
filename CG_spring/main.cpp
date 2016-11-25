@@ -22,6 +22,10 @@ GLuint textureSteel, textureGlass;
 GLfloat time = 0;
 GLfloat period = (GLfloat)(2.0f * M_PI * sqrt(MASS / COEFF_K));
 
+int last_x = 0;
+int last_y = 0;
+
+
 void Timer(int value)
 {
 	time += 0.1 * period;
@@ -94,8 +98,59 @@ void RenderScene()
 
 void RenderOnMotion(int x, int y)
 {
+	if (last_x < x)
+		gluLookAt(-0.001f, 0.0f, 0.0f, 
+			0.0f, 0.0f, -0.05f, 
+			0.0f, 1.0f, 0.0f);
+
+	if (last_x > x)
+		gluLookAt(0.001f, 0.0f, 0.0f, 
+			0.0f, 0.0f, -0.05f,
+			0.0f, 1.0f, 0.0f);
+
+	if (last_y < y)
+		gluLookAt(0, 0.001f, 0.0f, 
+			0.0f, 0.0f, -0.05f,
+			0.0f, 1.0f, 0.0f);
+
+	if (last_y > y)
+		gluLookAt(0.0f, -0.001f, 0.0f, 
+			0.0f, 0.0f, -0.05f,
+			0.0f, 1.0f, 0.0f);
+
+	last_x = x;
+	last_y = y;
 
 }
+
+void RenderOnKeypress(unsigned char key, GLint oldMouseX, GLint oldMouseY) 
+{
+	switch (key) {
+	case 'w':
+		gluLookAt(0.0f, 0.001f, 0.0f, 
+			0.0f, 0.0f, -0.05f,
+			0.0f, 1.0f, 0.0f);
+		break;
+	case 's':
+		gluLookAt(0.0f, -0.001f, 0.0f,
+			0.0f, 0.0f, -0.05f, 
+			0.0f, 1.0f, 0.0f);
+		break;
+	case 'a':
+		gluLookAt(-0.001f, 0.0f, 0.0f,
+			0.0f, 0.0f, -0.05f,
+			0.0f, 1.0f, 0.0f);
+		break;
+	case 'd':
+		gluLookAt(0.001f, 0.0f, 0.0f,
+			0.0f, 0.0f, -0.05f,
+			0.0f, 1.0f, 0.0f);
+		break;
+	case 27:
+		exit(0);
+	}
+}
+
 
 int main(int argc, char** argv)
 {
@@ -109,6 +164,7 @@ int main(int argc, char** argv)
 
 	glutDisplayFunc(RenderScene);
 	glutMotionFunc(RenderOnMotion);
+	glutKeyboardFunc(RenderOnKeypress);
 	Timer(0);
 	glutMainLoop();
 
